@@ -1,0 +1,25 @@
+---
+- name: Deploy Containers
+  hosts: docker
+  become: true
+
+  tasks:
+    - name: Aguardar 5min para liberar memória
+      pause:
+        minutes: 5
+      
+    - name: Clone GIT
+      git:
+        repo: 'https://github.com/tiagodiassilva/challenge.git'
+        dest: /srv/challenge
+        update: no
+
+    - name: Permissão de execução
+      ansible.builtin.file:
+        path: /srv/challenge/docker/docker-deploy.sh
+        owner: root
+        group: root
+        mode: '0750'
+
+    - name: Run Script to Deploy Containers
+      shell: /srv/challenge/docker/docker-deploy.sh
